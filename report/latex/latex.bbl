@@ -1,0 +1,28 @@
+\begin{thebibliography}{1}
+
+\bibitem{website:igraph}
+igraph – the network analysis package.
+\newblock \url{http://igraph.org/redirect.html}.
+\newblock [Online; accessed 25-May-2017].
+
+\bibitem{website:networkx}
+Networkx, high-productivity software for complex networks.
+\newblock \url{https://networkx.github.io/}.
+\newblock [Online; accessed 25-May-2017].
+
+\bibitem{website:edge_betweenness}
+Community finding based on edge betweenness.
+\newblock \url{http://igraph.org/c/doc/igraph-Community.html#idm470942730032}.
+\newblock [Online; accessed 25-May-2017].
+
+\bibitem{website:fastgreedy}
+Finding community structure by greedy optimization of modularity.
+\newblock \url{http://igraph.org/c/doc/igraph-Community.html#idm470942725872}.
+\newblock [Online; accessed 25-May-2017].
+
+\bibitem{website:louvain}
+Louvain method: Finding communities in large networks.
+\newblock \url{https://sites.google.com/site/findcommunities/}.
+\newblock [Online; accessed 25-May-2017].
+
+\end{thebibliography}

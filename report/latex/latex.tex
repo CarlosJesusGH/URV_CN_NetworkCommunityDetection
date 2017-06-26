@@ -1,0 +1,278 @@
+% Atom auto build latex -> Ctrl+Alt+B
+% Atom check spelling Ctrl+:
+% To use latex python scripts: cd ~/Dropbox/GeekFiles/Latex/ && source ~/Coding/venv/bin/activate
+
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{float}
+\usepackage[pdftex]{graphicx}
+\usepackage{url}
+\usepackage{listings}               % Code type bash
+\usepackage{subfig}                 % Images in a row
+
+\title{CN - Activity 3 \\ \bigskip Community detection}
+\author{\\ Carlos García}
+\date{May 2017}
+
+\begin{document}
+\maketitle \newpage \tableofcontents \newpage
+% ------------------------------------------------------------------------------
+\section{Project description}
+Apply at least three different community detection algorithms for the attached networks. It is not necessary to implement them, you may use any freely available software. At least one of the algorithms must be based on the optimization of modularity (but not all of them), and you must use at least two different programs (i.e. do not use the same application all the time).
+
+Some of the provided networks have a partition of reference, obtained from external information. In these cases, you have to compare your partitions with them, using at least the following standard measures: Jaccard Index, Normalized Mutual Information (arithmetic normalization), and Normalized Variation of Information. It is not necessary to implement the calculation of these indices, you may use any program (e.g. Radatools).
+
+The objective is to compare the partitions obtained with the different algorithms, to try to conclude which is the best method you have found.
+% ------------------------------------------------------------------------------
+\section{Program and libraries}
+As for prior projects, I decided working with Python, mainly because it is a robust language with a lot of useful libraries and lots of documentation.
+According with the project description we should use at least two different programs, then, I will use two different well-known libraries, they are igraph \cite{website:igraph} and NetworkX \cite{website:networkx}, the first one will be working with the first two community detection algorithms (Edge betweenness and greedy optimization of modularity) and the second one will work with the third community detection algorithm (Louvain method), we will focus on this algorithms in the next chapter.
+% ------------------------------------------------------------------------------
+\section{Algorithms used}
+  There are several methods to detect communities in networks, this ones I am using were selected simply because they are popular and people usually talk about them in several posts.
+
+  \subsection{Edge betweenness}
+    Community structure detection based on the betweenness of the edges in the network. The algorithm was invented by M. Girvan and M. Newman, see: M. Girvan and M. E. J. Newman: Community structure in social and biological networks, Proc. Nat. Acad. Sci. USA 99, 7821-7826 (2002).
+
+    The idea is that the betweenness of the edges connecting two communities is typically high, as many of the shortest paths between nodes in separate communities go through them. So we gradually remove the edge with highest betweenness from the network, and recalculate edge betweenness after every removal. This way sooner or later the network falls off to two components, then after a while one of these components falls off to two smaller components, etc. until all edges are removed. This is a divisive hierarchical approach, the result is a dendrogram \cite{website:edge_betweenness}.
+
+  \subsection{Greedy optimization of modularity}
+    This function implements the fast greedy modularity optimization algorithm for finding community structure, see A Clauset, MEJ Newman, C Moore: Finding community structure in very large networks \cite{website:fastgreedy}.
+
+    Quoting from the paper:
+    ``Here we present a hierarchical agglomeration algorithm for detecting community structure which is faster than many competing algorithms: its running time on a network with n vertices and m edges is O(m d log n) where d is the depth of the dendrogram describing the community structure. Many real-world networks are sparse and hierarchical, with m \url{~} n and d \url{~} log n, in which case our algorithm runs in essentially linear time, O(n log^2 n).''
+
+    Some improvements proposed in K Wakita, T Tsurumi: Finding community structure in mega-scale social networks, have also been implemented.
+
+  \subsection{Louvain method}
+    This method consists of two phases. First, it looks for ``small'' communities by optimizing modularity in a local way. Second, it aggregates nodes of the same community and builds a new network whose nodes are the communities. These steps are repeated iteratively until a maximum of modularity is attained \cite{website:louvain}.
+
+    The output of the program therefore gives several partitions. The partition found after the first step typically consists of many communities of small sizes. At subsequent steps, larger and larger communities are found due to the aggregation mechanism. This process naturally leads to hierarchical decomposition of the network.
+
+    This is obviously an approximate method and nothing ensures that the global maximum of modularity is attained, but several tests have confirmed that our algorithm has an excellent accuracy and often provides a decomposition in communities that has a modularity that is close to optimality.
+
+    Moreover, due to its hierarchical structure, which is reminiscent of renormalization methods, it allows to look at communities at different resolutions.
+
+    The method was first published in: Fast unfolding of communities in large networks, Vincent D Blondel, Jean-Loup Guillaume, Renaud Lambiotte, Etienne Lefebvre, Journal of Statistical Mechanics: Theory and Experiment 2008 (10), P1000.
+% ------------------------------------------------------------------------------
+\newpage
+\section{Resulting plots}
+  \subsection{Toy networks}
+    \subsubsection{20x2+5x2}
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=1 \textwidth]{{{"../../output_good/toy/20x2+5x2"}}}
+      \caption{20x2+5x2, plot from all methods}
+      \label{}
+    \end{figure}
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=1 \textwidth]{{{"../../output_good/clu_values/20x2+5x2_comm"}}}
+      \caption{20x2+5x2, community detection sample values}
+      \label{}
+    \end{figure}
+    \newpage
+
+    \subsubsection{graph3+1+3}
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=1 \textwidth]{{{"../../output_good/toy/graph3+1+3"}}}
+      \caption{graph3+1+3, plot from all methods}
+      \label{}
+    \end{figure}
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=1 \textwidth]{{{"../../output_good/clu_values/graph3+1+3_comm"}}}
+      \caption{graph3+1+3, community detection sample values}
+      \label{}
+    \end{figure}
+    \newpage
+
+    \subsubsection{graph4+4}
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=1 \textwidth]{{{"../../output_good/toy/graph4+4"}}}
+      \caption{graph4+4, plot from all methods}
+      \label{}
+    \end{figure}
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=1 \textwidth]{{{"../../output_good/clu_values/graph4+4_comm"}}}
+      \caption{graph4+4, community detection sample values}
+      \label{}
+    \end{figure}
+    \newpage
+
+    \subsubsection{star}
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=1 \textwidth]{{{"../../output_good/toy/star"}}}
+      \caption{star, plot from all methods}
+      \label{}
+    \end{figure}
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=1 \textwidth]{{{"../../output_good/clu_values/star_comm"}}}
+      \caption{star, community detection sample values}
+      \label{}
+    \end{figure}
+    \newpage
+
+  \subsection{Model networks}
+    \subsubsection{256\_4\_4\_2\_15\_18\_p}
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=1 \textwidth]{{{"../../output_good/model/256_4_4_2_15_18_p"}}}
+      \caption{256\_4\_4\_2\_15\_18\_p, plot from all methods}
+      \label{}
+    \end{figure}
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=1 \textwidth]{{{"../../output_good/clu_values/256_4_4_2_15_18_p_comm"}}}
+      \caption{256\_4\_4\_2\_15\_18\_p, community detection sample values}
+      \label{}
+    \end{figure}
+    \newpage
+
+    \subsubsection{256\_4\_4\_4\_13\_18\_p}
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=1 \textwidth]{{{"../../output_good/model/256_4_4_4_13_18_p"}}}
+      \caption{256\_4\_4\_4\_13\_18\_p, plot from all methods}
+      \label{}
+    \end{figure}
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=1 \textwidth]{{{"../../output_good/clu_values/256_4_4_4_13_18_p_comm"}}}
+      \caption{256\_4\_4\_4\_13\_18\_p, community detection sample values}
+      \label{}
+    \end{figure}
+    \newpage
+
+    \subsubsection{rb125}
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=1 \textwidth]{{{"../../output_good/model/rb125"}}}
+      \caption{rb125, plot from all methods}
+      \label{}
+    \end{figure}
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=1 \textwidth]{{{"../../output_good/clu_values/rb125_comm"}}}
+      \caption{rb125, community detection sample values}
+      \label{}
+    \end{figure}
+    \newpage
+
+  \subsection{Real networks}
+    \subsubsection{airports\_UW}
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=1 \textwidth]{{{"../../output_good/real/airports_UW"}}}
+      \caption{airports\_UW, plot from all methods}
+      \label{}
+    \end{figure}
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=1 \textwidth]{{{"../../output_good/clu_values/airports_UW_comm"}}}
+      \caption{airports\_UW, community detection sample values}
+      \label{}
+    \end{figure}
+    \newpage
+
+    \subsubsection{cat\_cortex\_sim}
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=1 \textwidth]{{{"../../output_good/real/cat_cortex_sim"}}}
+      \caption{cat\_cortex\_sim, plot from all methods}
+      \label{}
+    \end{figure}
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=1 \textwidth]{{{"../../output_good/clu_values/cat_cortex_sim_comm"}}}
+      \caption{cat\_cortex\_sim, community detection sample values}
+      \label{}
+    \end{figure}
+    \newpage
+
+    \subsubsection{dolphins}
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=1 \textwidth]{{{"../../output_good/real/dolphins"}}}
+      \caption{dolphins, plot from all methods}
+      \label{}
+    \end{figure}
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=1 \textwidth]{{{"../../output_good/clu_values/dolphins_comm"}}}
+      \caption{dolphins, community detection sample values}
+      \label{}
+    \end{figure}
+    \newpage
+
+    \subsubsection{football}
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=1 \textwidth]{{{"../../output_good/real/football"}}}
+      \caption{football, plot from all methods}
+      \label{}
+    \end{figure}
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=1 \textwidth]{{{"../../output_good/clu_values/football_comm"}}}
+      \caption{football, community detection sample values}
+      \label{}
+    \end{figure}
+    \newpage
+
+    \subsubsection{zachary\_unwh}
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=1 \textwidth]{{{"../../output_good/real/zachary_unwh"}}}
+      \caption{zachary\_unwh, plot from all methods}
+      \label{}
+    \end{figure}
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=1 \textwidth]{{{"../../output_good/clu_values/zachary_unwh_comm"}}}
+      \caption{zachary\_unwh, community detection sample values}
+      \label{}
+    \end{figure}
+    \newpage
+
+% ------------------------------------------------------------------------------
+\newpage
+\section{Comparison tables}
+  \subsection{Measures comparison}
+    In these part we can compare our partitions with the references, using the following standard measures: Jaccard Index (ji), Normalized Mutual Information (nmi), and Variation of Information (vi).
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=1 \textwidth]{"../../output_good/community_comparison"}
+      \caption{Method 1 is Edge betweenness, method 2 is Greedy optimization of modularity and method 3 is Louvain}
+    \end{figure}
+
+  \subsection{Modularity comparison}
+    Here we show a table with the modularity values of all the partitions (including the reference ones), grouped by network.
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=0.8 \textwidth]{"../../output_good/community_modularity"}
+      \caption{Method 1 is Edge betweenness, method 2 is Greedy optimization of modularity and method 3 is Louvain}
+    \end{figure}
+
+% ------------------------------------------------------------------------------
+\newpage
+\section{Conclusion}
+  After trying the different community detection methods, maybe the most consistent in good results for almost every network is the Louvain method, and besides, it worked with very good performance in all networks, taking only a few seconds even for the real ones.
+
+  The greedy optimization of modularity also got good results, almost as good as the ones obtained with the Louvain method.
+
+  On the other hand, the Edge betweenness seemed quite inconsistent with results, and even more, it usually spend more time than other methods, and it even got stuck for the network airports\_UW where we could not get the final membership detection.
+
+% ------------------------------------------------------------------------------
+\newpage
+\bibliographystyle{unsrt}   %unsrt by appearance
+% Create also a file in this folder called "references.bib" and can paste the latex info as Wikipedia use them in "Cite this page" section.
+\bibliography{references}
+% ------------------------------------------------------------------------------
+\end{thebibliography}
+\end{document}
